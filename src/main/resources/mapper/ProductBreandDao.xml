@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jiyun.shop.dao.ProductBreandDao">
+
+    <resultMap id="BaseResultMap" type="cn.jiyun.shop.entity.ProductBreand">
+        <!--@Table product_breand-->
+        <result property="brandid" column="brandid" jdbcType="INTEGER"/>
+        <result property="brandname" column="brandName" jdbcType="VARCHAR"/>
+        <result property="brandlogo" column="brandlogo" jdbcType="VARCHAR"/>
+        <result property="brandstory" column="brandstory" jdbcType="VARCHAR"/>
+        <result property="brandinfo" column="brandinfo" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          brandid, brandName, brandlogo, brandstory, brandinfo
+        from product_breand
+        where brandid = #{brandid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          brandid, brandName, brandlogo, brandstory, brandinfo
+        from product_breand
+        <where>
+            <if test="brandid != null">
+                and brandid = #{brandid}
+            </if>
+            <if test="brandname != null and brandname != ''">
+                and brandName = #{brandname}
+            </if>
+            <if test="brandlogo != null and brandlogo != ''">
+                and brandlogo = #{brandlogo}
+            </if>
+            <if test="brandstory != null and brandstory != ''">
+                and brandstory = #{brandstory}
+            </if>
+            <if test="brandinfo != null and brandinfo != ''">
+                and brandinfo = #{brandinfo}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          brandid, brandName, brandlogo, brandstory, brandinfo
+        from shop.product_breand
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from product_breand
+        <where>
+            <if test="brandid != null">
+                and brandid = #{brandid}
+            </if>
+            <if test="brandname != null and brandname != ''">
+                and brandName = #{brandname}
+            </if>
+            <if test="brandlogo != null and brandlogo != ''">
+                and brandlogo = #{brandlogo}
+            </if>
+            <if test="brandstory != null and brandstory != ''">
+                and brandstory = #{brandstory}
+            </if>
+            <if test="brandinfo != null and brandinfo != ''">
+                and brandinfo = #{brandinfo}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="brandid" useGeneratedKeys="true">
+        insert into product_breand(brandName, brandlogo, brandstory, brandinfo)
+        values (#{brandname}, #{brandlogo}, #{brandstory}, #{brandinfo})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="brandid" useGeneratedKeys="true">
+        insert into product_breand(brandName, brandlogo, brandstory, brandinfo)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.brandname}, #{entity.brandlogo}, #{entity.brandstory}, #{entity.brandinfo})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="brandid" useGeneratedKeys="true">
+        insert into product_breand(brandName, brandlogo, brandstory, brandinfo)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.brandname}, #{entity.brandlogo}, #{entity.brandstory}, #{entity.brandinfo})
+        </foreach>
+        on duplicate key update
+        brandName = values(brandName),
+        brandlogo = values(brandlogo),
+        brandstory = values(brandstory),
+        brandinfo = values(brandinfo)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update product_breand
+        <set>
+            <if test="brandname != null and brandname != ''">
+                brandName = #{brandname},
+            </if>
+            <if test="brandlogo != null and brandlogo != ''">
+                brandlogo = #{brandlogo},
+            </if>
+            <if test="brandstory != null and brandstory != ''">
+                brandstory = #{brandstory},
+            </if>
+            <if test="brandinfo != null and brandinfo != ''">
+                brandinfo = #{brandinfo},
+            </if>
+        </set>
+        where brandid = #{brandid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from product_breand where brandid = #{brandid}
+    </delete>
+
+</mapper>
+
