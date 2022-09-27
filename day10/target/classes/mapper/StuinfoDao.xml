@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jiyun.day10.dao.StuinfoDao">
+    <resultMap id="StuInfoMap" type="stuinfo">
+        <id property="stuid" column="stuid"></id>
+        <result property="student" column="student" javaType="Student"  typeHandler="cn.jiyun.day10.handle.JsonTypeHandler"/>
+    </resultMap>
+    <select id="findAll" resultMap="StuInfoMap">
+        select * from stuInfo
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="stuid" useGeneratedKeys="true">
+        insert into stuInfo(student)
+        values (#{student})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="stuid" useGeneratedKeys="true">
+        insert into stuInfo(student)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.student})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="stuid" useGeneratedKeys="true">
+        insert into stuInfo(student)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.student})
+        </foreach>
+        on duplicate key update
+        student = values(student)
+    </insert>
+    <insert id="add">
+        insert into stuInfo values (#{stuid},#{student, typeHandler=cn.jiyun.day10.handle.JsonTypeHandler})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update stuInfo
+        <set>
+            <if test="student != null and student != ''">
+                student = #{student},
+            </if>
+        </set>
+        where stuId = #{stuid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from stuInfo where stuId = #{stuid}
+    </delete>
+
+</mapper>
+
